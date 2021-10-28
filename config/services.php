@@ -33,6 +33,6 @@ return [
     'github' => [
         'client_id' => env('GITHUB_CLIENT_ID'),
         'client_secret' => env('GITHUB_SECRET_ID'),
-        'redirect' => env('GITHUB_REDIRECT'),
+        'redirect' => "http://socialite-login.test/auth/github/callback",
     ],
 ];

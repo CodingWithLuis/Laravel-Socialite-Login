@@ -19,31 +19,25 @@ class LoginGithubController extends Controller
     public function handleGithubCallback()
     {
 
-        try {
+        $user = Socialite::driver('github')->user();
 
-            $user = Socialite::driver('github')->user();
+        $existsUser = User::where('social_id', $user->id)
+            ->where('social_type', 'github')->first();
 
-            $finduser = User::where('social_id', $user->id)->first();
+        if ($existsUser) {
+            Auth::login($existsUser);
+        } else {
 
-            if ($finduser) {
+            $newUser = User::create([
+                'name' => $user->name,
+                'email' => $user->email,
+                'social_id' => $user->id,
+                'social_type' => 'github',
+            ]);
 
-                Auth::login($finduser);
-
-                return redirect()->route('dashboard');
-            } else {
-                $newUser = User::create([
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'social_id' => $user->id,
-                    'social_type' => 'github',
-                    'password' => Hash::make('github123456')
-                ]);
-
-                Auth::login($newUser);
-
-                return redirect()->route('dashboard');
-            }
-        } catch (Exception $e) {
+            Auth::login($newUser);
         }
+
+        return redirect()->route('dashboard');
     }
 }
