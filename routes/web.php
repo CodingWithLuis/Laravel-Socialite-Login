@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LoginGithubController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('auth/github', [LoginGithubController::class, 'redirectGithub']);
+Route::get('auth/github/callback', [LoginGithubController::class, 'handleGithubCallback']);
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__ . '/auth.php';
